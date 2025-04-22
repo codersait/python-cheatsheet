@@ -306,9 +306,12 @@ numbers = array("i", [1, 2, 3])
       },
       {
         description: 'Sets (unordered collections with no duplicates)',
-        code: `first = {1, 2, 3, 4}
-second = {1, 5}
+        code: `# Creating sets
+numbers = [1, 1, 2, 3, 4]  # List with duplicates
+first = set(numbers)       # Convert list to set (removes duplicates): {1, 2, 3, 4}
+second = {1, 5}            # Direct set creation with curly braces
 
+# Set operations
 first | second  # Union: {1, 2, 3, 4, 5}
 first & second  # Intersection: {1}
 first - second  # Difference: {2, 3, 4}
@@ -419,7 +422,14 @@ filtered = [item for item in items if item[1] >= 10]`,
       },
       {
         description: 'Dictionary Comprehensions',
-        code: `values = {x: x * 2 for x in range(5)}`,
+        code: `# Traditional way:
+values = {}
+for x in range(5):
+    values[x] = x * 2
+
+# Dictionary comprehension (more concise):
+values = {x: x * 2 for x in range(5)}
+print(values)  # {0: 0, 1: 2, 2: 4, 3: 6, 4: 8}`,
       },
       {
         description: 'Generator Expressions (memory efficient)',
