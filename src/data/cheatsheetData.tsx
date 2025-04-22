@@ -288,8 +288,8 @@ print(combined)  # {'x': 10, 'y': 2, 'z': 1} (note: second dict's values overrid
     ],
   },
   {
-    id: 'tuples-sets-dictionaries',
-    title: 'Tuples, Sets, and Dictionaries',
+    id: 'tuples',
+    title: 'Tuples',
     examples: [
       {
         description: 'Tuples (immutable sequences)',
@@ -307,6 +307,12 @@ y = 11
 x, y = y, x  # Swap values (creates a tuple and unpacks it)
 # Under the hood: a tuple (y, x) is created and then unpacked`,
       },
+    ],
+  },
+  {
+    id: 'arrays',
+    title: 'Arrays',
+    examples: [
       {
         description: 'Arrays (for large sequences of numbers)',
         code: `from array import array
@@ -318,6 +324,12 @@ numbers = array("i", [1, 2, 3])
 # For ~90% of cases, regular lists are sufficient
 # Don't optimize prematurely - don't solve a problem that doesn't exist`,
       },
+    ],
+  },
+  {
+    id: 'sets',
+    title: 'Sets',
+    examples: [
       {
         description: 'Sets (unordered collections with no duplicates)',
         code: `# Creating sets
@@ -331,6 +343,12 @@ first & second  # Intersection: {1}
 first - second  # Difference: {2, 3, 4}
 first ^ second  # Symmetric Difference: {2, 3, 4, 5}`,
       },
+    ],
+  },
+  {
+    id: 'dictionaries',
+    title: 'Dictionaries',
+    examples: [
       {
         description: 'Dictionaries (key-value pairs)',
         code: `point = {"x": 1, "y": 2}
@@ -346,6 +364,12 @@ del point["x"]          # Delete a key-value pair
 for key, value in point.items():
     # Process keys and values`,
       },
+    ],
+  },
+  {
+    id: 'data-structures',
+    title: 'Data Structures',
+    examples: [
       {
         description: 'Stack (LIFO - Last In, First Out)',
         code: `# Creating a stack
