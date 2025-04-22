@@ -187,10 +187,10 @@ letters.insert(0, "-") # Insert at index`,
       {
         description: 'Removing Items',
         code: `letters.pop()     # Remove last item
-letters.pop(0)    # Remove at index
+letters.pop(0)      # Remove at index
 letters.remove("b") # Remove by value
-del letters[0:3]  # Remove a slice
-letters.clear() # Remove all items`,
+del letters[0:3]    # Remove a slice
+letters.clear()     # Remove all items`,
       },
       {
         description: 'Finding Items',
