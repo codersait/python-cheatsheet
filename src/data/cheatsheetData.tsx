@@ -148,7 +148,7 @@ multiply(1, 2, 3, 4)`,
         code: `def save_user(**user):
     # user is a dictionary
 
-save_user(id=1, name="Mosh")`,
+save_user(id=1, name="John")`,
       },
     ],
   },
