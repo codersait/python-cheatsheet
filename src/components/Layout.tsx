@@ -74,7 +74,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       {/* Main content */}
       <div className="flex-1 flex flex-col min-h-screen">
         <header className="sticky top-0 z-30 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm py-2 sm:py-3 md:py-4 px-2 sm:px-4 md:px-8 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center shadow-sm">
-          <div className="ml-10 md:ml-0 text-base sm:text-lg md:text-xl font-bold text-blue-600 dark:text-blue-400 truncate">
+          <div className="ml-10 md:ml-0 text-base sm:text-lg md:text-xl font-bold text-blue-600 dark:text-blue-400 truncate pl-2">
             Python Cheatsheet
           </div>
           <div className="flex items-center gap-1 sm:gap-2 md:gap-4">
