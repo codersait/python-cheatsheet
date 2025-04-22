@@ -322,6 +322,55 @@ del point["x"]          # Delete a key-value pair
 for key, value in point.items():
     # Process keys and values`,
       },
+      {
+        description: 'Stack (LIFO - Last In, First Out)',
+        code: `# Creating a stack
+browsing_session = []
+
+# Pushing an item
+browsing_session.append(1)
+browsing_session.append(2)
+browsing_session.append(3)
+print(browsing_session)  # [1, 2, 3]
+
+# Popping (removing and returning the last item)
+last = browsing_session.pop()
+print(last)              # 3
+print(browsing_session)  # [1, 2]
+
+# Peek (get the top item without removing)
+print("redirect", browsing_session[-1])  # "redirect" 2
+
+# Check if stack is empty
+if not browsing_session:
+    print("disable")`,
+      },
+      {
+        description: 'Queue (FIFO - First In, First Out)',
+        code: `from collections import deque
+
+# Creating a queue
+# Unlike a regular list, deque provides O(1) time complexity
+# for append and pop operations from both ends
+# With a regular list, popping from the beginning (list.pop(0))
+# requires shifting all remaining elements left, making it O(n)
+
+queue = deque([])
+
+# Adding items to the queue
+queue.append(1)
+queue.append(2)
+queue.append(3)
+
+# Removing the first item (FIFO)
+queue.popleft()  # Removes and returns 1
+
+print(queue)  # deque([2, 3])
+
+# Check if queue is empty
+if not queue:
+    print("empty")`,
+      },
     ],
   },
   {
