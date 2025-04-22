@@ -115,7 +115,7 @@ not x    # Inverses a boolean`,
         code: `# For loop
 for n in range(1, 10):
     # Iterates from 1 to 9
-    
+
 # While loop
 while n > 10:
     # Executes while n > 10`,
@@ -140,14 +140,14 @@ while n > 10:
         code: `def multiply(*numbers):
     for number in numbers:
         print(number)
-        
+
 multiply(1, 2, 3, 4)`,
       },
       {
         description: 'Variable Number of Keyword Arguments',
         code: `def save_user(**user):
     # user is a dictionary
-    
+
 save_user(id=1, name="Mosh")`,
       },
     ],
@@ -189,7 +189,8 @@ letters.insert(0, "-") # Insert at index`,
         code: `letters.pop()     # Remove last item
 letters.pop(0)    # Remove at index
 letters.remove("b") # Remove by value
-del letters[0:3]  # Remove a slice`,
+del letters[0:3]  # Remove a slice,
+letters.clear() # Remove all items`,
       },
       {
         description: 'Finding Items',
@@ -218,7 +219,7 @@ items.sort(key=lambda item: item[1])`,
         description: 'Looping Over Lists',
         code: `for letter in letters:
     # Process each letter
-    
+
 for index, letter in enumerate(letters):
     # Process both index and letter`,
       },
@@ -279,7 +280,7 @@ point["z"] = 3          # Add key-value pair
 
 if "a" in point:        # Check if key exists
     # Do something
-    
+
 point.get("a", 0)       # Get with default
 del point["x"]          # Delete a key-value pair
 
@@ -348,7 +349,7 @@ finally:
     def __init__(self, x, y):
         self.x = x
         self.y = y
-        
+
     def draw(self):
         # Method implementation`,
       },
@@ -356,7 +357,7 @@ finally:
         description: 'Instance vs Class Attributes',
         code: `class Point:
     default_color = "red"  # Class attribute
-    
+
     def __init__(self, x, y):
         self.x = x  # Instance attribute`,
       },
@@ -365,7 +366,7 @@ finally:
         code: `class Point:
     def draw(self):  # Instance method
         # Uses self
-        
+
     @classmethod
     def zero(cls):   # Class method
         return cls(0, 0)`,
@@ -387,11 +388,11 @@ __cmp__()  # Comparison`,
         code: `class Point:
     def __init__(self, x):
         self.__x = x
-        
+
     @property
     def x(self):
         return self.__x
-        
+
     @x.setter
     def x(self, value):
         self.__x = value`,
