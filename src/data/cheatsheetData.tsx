@@ -433,7 +433,41 @@ print(values)  # {0: 0, 1: 2, 2: 4, 3: 6, 4: 8}`,
       },
       {
         description: 'Generator Expressions (memory efficient)',
-        code: `values = (x for x in range(500000))`,
+        code: `# Use generator expressions when:
+# - Working with large datasets (to avoid loading everything into memory)
+# - You only need to iterate through the values once
+# - Processing data in a pipeline or stream
+
+# Regular list (stores all values in memory)
+values_list = [x for x in range(500000)]  # Creates full list in memory
+
+# Generator expression (produces values on-demand)
+values_gen = (x for x in range(500000))   # Creates generator object
+
+# Generators calculate values one at a time, only when needed
+# This makes them more memory-efficient for large datasets
+# Each value is "forgotten" after use
+
+# Example: finding the sum
+sum(x for x in range(1000000))  # Efficient - never stores all values
+
+# Real-world examples:
+# 1. Processing large files
+with open("large_log_file.txt") as file:
+    lines = (line for line in file if "ERROR" in line)
+    for line in lines:
+        process_error(line)  # Process one line at a time
+
+# 2. Data transformations
+def get_users_data():
+    users = get_users_from_database()  # Could be millions
+    user_info = ((user.id, user.name) for user in users)
+    return user_info  # Returns generator, not full list
+
+# 3. Web scraping/API processing
+page_urls = (f"https://api.example.com/data?page={i}" for i in range(1, 1000))
+for url in page_urls:
+    fetch_and_process(url)  # Process one page at a time`,
       },
     ],
   },
