@@ -290,7 +290,8 @@ x, y, z = point  # Unpack a tuple`,
         description: 'Swapping Variables',
         code: `x = 10
 y = 11
-x, y = y, x  # Swap values`,
+x, y = y, x  # Swap values (creates a tuple and unpacks it)
+# Under the hood: a tuple (y, x) is created and then unpacked`,
       },
       {
         description: 'Arrays (for large sequences of numbers)',
