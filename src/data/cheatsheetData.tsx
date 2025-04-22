@@ -267,9 +267,23 @@ result = list(zip("abc", list1, list2))
       },
       {
         description: 'Unpacking Operator',
-        code: `list1 = [1, 2, 3]
-list2 = [10, 20, 30]
-combined = [*list1, "a", *list2]`,
+        code: `# Similar to spread operator in JavaScript
+
+# Unpacking iterables into lists
+values = list(range(5))          # [0, 1, 2, 3, 4]
+values = [*range(5), *"Hello"]   # [0, 1, 2, 3, 4, 'H', 'e', 'l', 'l', 'o']
+
+# Combining lists
+first = [1, 2]
+second = [3]
+values = [*first, "a", *second, *"Hello"]
+print(values)  # [1, 2, 'a', 3, 'H', 'e', 'l', 'l', 'o']
+
+# Unpacking dictionaries (use ** for dictionaries)
+first = {"x": 1}
+second = {"x": 10, "y": 2}
+combined = {**first, **second, "z": 1}
+print(combined)  # {'x': 10, 'y': 2, 'z': 1} (note: second dict's values override first's)`,
       },
     ],
   },
