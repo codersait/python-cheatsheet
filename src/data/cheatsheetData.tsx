@@ -296,7 +296,13 @@ x, y = y, x  # Swap values (creates a tuple and unpacks it)
       {
         description: 'Arrays (for large sequences of numbers)',
         code: `from array import array
-numbers = array("i", [1, 2, 3])`,
+numbers = array("i", [1, 2, 3])
+
+# Arrays use less memory and are faster for large lists
+# Unlike lists, objects in arrays are typed ('i' = integers)
+# Only use if you have performance problems with regular lists
+# For ~90% of cases, regular lists are sufficient
+# Don't optimize prematurely - don't solve a problem that doesn't exist`,
       },
       {
         description: 'Sets (unordered collections with no duplicates)',
