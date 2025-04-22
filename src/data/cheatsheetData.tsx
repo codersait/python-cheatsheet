@@ -189,7 +189,7 @@ letters.insert(0, "-") # Insert at index`,
         code: `letters.pop()     # Remove last item
 letters.pop(0)    # Remove at index
 letters.remove("b") # Remove by value
-del letters[0:3]  # Remove a slice,
+del letters[0:3]  # Remove a slice
 letters.clear() # Remove all items`,
       },
       {
