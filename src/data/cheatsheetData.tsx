@@ -208,9 +208,23 @@ letters.sort(reverse=True)`,
         code: `items = [
     ("Product1", 10),
     ("Product2", 9),
-    ("Product3", 11)
+    ("Product3", 12)
 ]
-items.sort(key=lambda item: item[1])`,
+
+# Using a named function
+def sort_item(item):
+    return item[1]
+
+items.sort(key=sort_item)
+
+# General lambda syntax
+items.sort(key=lambda parameters: expression)
+
+# Using a lambda function (more concise)
+items.sort(key=lambda item: item[1])
+
+
+print(items)  # [("Product2", 9), ("Product1", 10), ("Product3", 12)]`,
       },
       {
         description: 'Unpacking Lists',
