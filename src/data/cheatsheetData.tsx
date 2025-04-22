@@ -195,7 +195,8 @@ letters.clear()     # Remove all items`,
       {
         description: 'Finding Items',
         code: `if "f" in letters:
-    letters.index("f")  # Find index of value`,
+    letters.index("f")  # Find index of value
+    letters.count("a")  # Count occurrences of value`,
       },
       {
         description: 'Sorting Lists',
