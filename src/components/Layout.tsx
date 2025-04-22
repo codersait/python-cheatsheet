@@ -1,8 +1,8 @@
+import { Menu, X } from 'lucide-react';
 import React, { ReactNode, useState } from 'react';
+import SearchBar from './SearchBar';
 import Sidebar from './Sidebar';
 import ThemeToggle from './ThemeToggle';
-import SearchBar from './SearchBar';
-import { Menu, X } from 'lucide-react';
 
 interface LayoutProps {
   children: ReactNode;
@@ -53,7 +53,26 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </main>
 
         <footer className="py-6 px-8 border-t border-gray-200 dark:border-gray-700 text-sm text-center text-gray-500 dark:text-gray-400">
-          <p>© {new Date().getFullYear()} Python Cheatsheet. Created with ❤️ for Python developers.</p>
+          <p>
+            © {new Date().getFullYear()} Python Cheatsheet. Created with ❤️ by{' '}
+            <a
+              href="https://suli.digital"
+              target="_blank"
+              className="font-semibold text-blue-600 dark:text-blue-400 hover:underline"
+            >
+              <span>Suli Digital</span>
+            </a>
+            .
+          </p>
+          <p className="mt-2">
+            <a
+              href="https://buymeacoffee.com/codersait"
+              target="_blank"
+              className="inline-flex items-center gap-1 px-3 py-1 mt-2 text-sm font-medium text-white bg-yellow-500 rounded-md hover:bg-yellow-600"
+            >
+              ☕ Buy Me a Coffee
+            </a>
+          </p>
         </footer>
       </div>
     </div>
