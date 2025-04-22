@@ -223,8 +223,24 @@ items.sort(key=lambda parameters: expression)
 # Using a lambda function (more concise)
 items.sort(key=lambda item: item[1])
 
-
 print(items)  # [("Product2", 9), ("Product1", 10), ("Product3", 12)]`,
+      },
+      {
+        description: 'Lambda Functions',
+        code: `# Lambda syntax: lambda parameters: expression
+
+# Using map with lambda to extract prices
+items = [
+    ("Product1", 10),
+    ("Product2", 9),
+    ("Product3", 12)
+]
+prices = list(map(lambda item: item[1], items))
+print(prices)  # [10, 9, 12]
+
+# Using filter with lambda to filter items
+x = list(filter(lambda item: item[1] >= 10, items))
+print(x)  # [("Product1", 10), ("Product3", 12)]`,
       },
       {
         description: 'Unpacking Lists',
@@ -243,7 +259,11 @@ for index, letter in enumerate(letters):
         code: `list1 = [1, 2, 3]
 list2 = [10, 20, 30]
 combined = list(zip(list1, list2))
-# [(1, 10), (2, 20), (3, 30)]`,
+# [(1, 10), (2, 20), (3, 30)]
+
+# Zip with a string
+result = list(zip("abc", list1, list2))
+# [('a', 1, 10), ('b', 2, 20), ('c', 3, 30)]`,
       },
       {
         description: 'Unpacking Operator',
@@ -310,8 +330,32 @@ for key, value in point.items():
     examples: [
       {
         description: 'List Comprehensions',
-        code: `values = [x * 2 for x in range(5)]
-values = [x * 2 for x in range(5) if x % 2 == 0]`,
+        code: `# General syntax: [expression for item in items]
+
+# Basic list comprehension
+values = [x * 2 for x in range(5)]
+
+# With condition (filtering)
+values = [x * 2 for x in range(5) if x % 2 == 0]
+
+# Example with real data
+items = [
+    ("Product1", 10),
+    ("Product2", 9),
+    ("Product3", 12)
+]
+
+# Extracting values - equivalent approaches:
+# Using map with lambda
+prices = list(map(lambda item: item[1], items))
+# Using list comprehension
+prices = [item[1] for item in items]
+
+# Filtering values - equivalent approaches:
+# Using filter with lambda
+filtered = list(filter(lambda item: item[1] >= 10, items))
+# Using list comprehension
+filtered = [item for item in items if item[1] >= 10]`,
       },
       {
         description: 'Set Comprehensions',
