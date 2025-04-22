@@ -73,23 +73,23 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
       {/* Main content */}
       <div className="flex-1 flex flex-col min-h-screen">
-        <header className="sticky top-0 z-30 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm py-3 md:py-4 px-4 md:px-8 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center shadow-sm">
-          <div className="ml-10 md:ml-0 text-lg md:text-xl font-bold text-blue-600 dark:text-blue-400">
+        <header className="sticky top-0 z-30 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm py-2 sm:py-3 md:py-4 px-2 sm:px-4 md:px-8 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center shadow-sm">
+          <div className="ml-10 md:ml-0 text-base sm:text-lg md:text-xl font-bold text-blue-600 dark:text-blue-400 truncate">
             Python Cheatsheet
           </div>
-          <div className="flex items-center gap-2 md:gap-4">
+          <div className="flex items-center gap-1 sm:gap-2 md:gap-4">
             <SearchBar value={searchQuery} onChange={setSearchQuery} />
             <ThemeToggle />
           </div>
         </header>
 
-        <main className="flex-1 p-4 md:p-8 max-w-6xl mx-auto w-full bg-gray-50 dark:bg-gray-900">
+        <main className="flex-1 p-2 sm:p-4 md:p-8 max-w-6xl mx-auto w-full bg-gray-50 dark:bg-gray-900">
           <div className="rounded-lg overflow-hidden bg-white dark:bg-gray-800 shadow-sm">
             {children}
           </div>
         </main>
 
-        <footer className="py-5 md:py-6 px-4 md:px-8 border-t border-gray-200 dark:border-gray-700 text-sm text-center text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-900">
+        <footer className="py-4 sm:py-5 md:py-6 px-4 md:px-8 border-t border-gray-200 dark:border-gray-700 text-sm text-center text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-900">
           <p className="text-xs md:text-sm">
             © {new Date().getFullYear()} Python Cheatsheet. Created with ❤️ by{' '}
             <a
@@ -101,7 +101,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             </a>
             .
           </p>
-          <p className="mt-3">
+          <p className="mt-2 sm:mt-3">
             <a
               href="https://buymeacoffee.com/codersait"
               target="_blank"

@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
 import { Search } from 'lucide-react';
-import { sections, Section, CodeExample } from '../data/cheatsheetData';
+import React, { useEffect, useRef, useState } from 'react';
+import { sections } from '../data/cheatsheetData';
 
 interface SearchBarProps {
   value: string;
@@ -35,19 +35,23 @@ const SearchBar: React.FC<SearchBarProps> = ({ value, onChange }) => {
           sectionId: section.id,
           sectionTitle: section.title,
           matchText: section.title,
-          type: 'title'
+          type: 'title',
         });
       }
 
       // Search in code examples
       section.examples.forEach((example) => {
-        if (example.code.toLowerCase().includes(query) || 
-            (example.description && example.description.toLowerCase().includes(query))) {
+        if (
+          example.code.toLowerCase().includes(query) ||
+          (example.description &&
+            example.description.toLowerCase().includes(query))
+        ) {
           results.push({
             sectionId: section.id,
             sectionTitle: section.title,
-            matchText: example.description || example.code.substring(0, 30) + '...',
-            type: 'code'
+            matchText:
+              example.description || example.code.substring(0, 30) + '...',
+            type: 'code',
           });
         }
       });
@@ -58,7 +62,10 @@ const SearchBar: React.FC<SearchBarProps> = ({ value, onChange }) => {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
@@ -74,7 +81,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ value, onChange }) => {
     if (element) {
       window.scrollTo({
         top: element.offsetTop - 80,
-        behavior: 'smooth'
+        behavior: 'smooth',
       });
     }
     setIsOpen(false);
@@ -84,8 +91,8 @@ const SearchBar: React.FC<SearchBarProps> = ({ value, onChange }) => {
   return (
     <div className="relative" ref={searchRef}>
       <div className="relative">
-        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-          <Search size={16} className="text-gray-400" />
+        <div className="absolute inset-y-0 left-0 flex items-center pl-2 sm:pl-3 pointer-events-none">
+          <Search size={14} className="text-gray-400" />
         </div>
         <input
           type="search"
@@ -96,22 +103,22 @@ const SearchBar: React.FC<SearchBarProps> = ({ value, onChange }) => {
           }}
           onClick={() => setIsOpen(value.trim() !== '')}
           placeholder="Search..."
-          className="block w-full md:w-64 pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+          className="block w-32 sm:w-48 md:w-64 pl-7 sm:pl-10 pr-2 sm:pr-3 py-1 sm:py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
         />
       </div>
-      
+
       {isOpen && searchResults.length > 0 && (
-        <div className="absolute z-50 mt-2 w-full bg-white dark:bg-gray-800 shadow-lg rounded-md border border-gray-200 dark:border-gray-700 max-h-80 overflow-y-auto">
+        <div className="absolute z-50 right-0 mt-2 w-60 sm:w-72 md:w-full bg-white dark:bg-gray-800 shadow-lg rounded-md border border-gray-200 dark:border-gray-700 max-h-60 sm:max-h-80 overflow-y-auto">
           {searchResults.map((result, index) => (
             <button
               key={index}
               onClick={() => handleResultClick(result.sectionId)}
-              className="block w-full text-left px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700 border-b border-gray-100 dark:border-gray-700 last:border-b-0"
+              className="block w-full text-left px-3 sm:px-4 py-2 sm:py-3 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700 border-b border-gray-100 dark:border-gray-700 last:border-b-0"
             >
-              <p className="text-sm font-medium text-gray-900 dark:text-white">
+              <p className="text-xs sm:text-sm font-medium text-gray-900 dark:text-white truncate">
                 {result.sectionTitle}
               </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 truncate">
                 {result.matchText}
               </p>
             </button>
