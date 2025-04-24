@@ -2428,6 +2428,224 @@ try:
 except Exception as e:
     print(f"Invalid number: {str(e)}")`,
       },
+      {
+        description: 'Web Scraping with Scrapy',
+        code: `# Scrapy is a powerful web crawling and scraping framework
+# Install with: pip install scrapy
+
+# First, create a new Scrapy project by running:
+# scrapy startproject bookscrapy
+# cd bookscrapy
+# scrapy genspider bookspider books.toscrape.com
+
+# This is how your spider file might look:
+# bookscrapy/spiders/bookspider.py
+import scrapy
+
+class BookSpider(scrapy.Spider):
+    name = "bookspider"
+    allowed_domains = ["books.toscrape.com"]
+    start_urls = ["https://books.toscrape.com/"]
+
+    def parse(self, response):
+        # Extract all book links from the page
+        books = response.css('article.product_pod')
+
+        for book in books:
+            yield {
+                'title': book.css('h3 a::attr(title)').get(),
+                'price': book.css('p.price_color::text').get(),
+                'rating': book.css('p.star-rating::attr(class)').get().split()[1],
+                'url': book.css('h3 a::attr(href)').get(),
+            }
+
+        # Follow pagination links
+        next_page = response.css('li.next a::attr(href)').get()
+        if next_page:
+            yield response.follow(next_page, self.parse)
+
+    # Example of a method to follow links to book details
+    def parse_book_details(self, response):
+        yield {
+            'title': response.css('div.product_main h1::text').get(),
+            'description': response.css('div#product_description + p::text').get(),
+            'category': response.css('ul.breadcrumb li:nth-child(3) a::text').get(),
+            'price': response.css('p.price_color::text').get(),
+            'stock': response.css('p.availability::text').getall()[1].strip(),
+        }
+
+# Run the spider with:
+# scrapy crawl bookspider -o books.json
+
+# To include custom settings in your spider:
+class ConfiguredSpider(scrapy.Spider):
+    name = "configspider"
+    custom_settings = {
+        'USER_AGENT': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        'DOWNLOAD_DELAY': 2,  # 2 second delay between requests
+        'CONCURRENT_REQUESTS_PER_DOMAIN': 1,
+        'ROBOTSTXT_OBEY': True,
+    }
+
+    # Spider implementation continues...
+
+# Using Item classes to define structured data
+from scrapy.item import Item, Field
+
+class BookItem(Item):
+    title = Field()
+    author = Field()
+    price = Field()
+
+# Using middlewares and pipelines (in settings.py)
+# ITEM_PIPELINES = {
+#    'bookscrapy.pipelines.DuplicatesPipeline': 300,
+#    'bookscrapy.pipelines.PriceConverterPipeline': 400,
+# }
+
+# Creating a simple pipeline for data processing
+class PriceConverterPipeline:
+    def process_item(self, item, spider):
+        # Convert "£51.77" to 51.77
+        if 'price' in item:
+            item['price'] = float(item['price'].replace('£', ''))
+        return item`,
+      },
+      {
+        description: 'Browser Automation with Playwright',
+        code: `# Playwright is a powerful browser automation library
+# Install with: pip install playwright
+# Then install browsers: python -m playwright install
+
+from playwright.sync_api import sync_playwright
+
+# Basic usage with context manager
+with sync_playwright() as p:
+    # Launch browser (chromium, firefox, or webkit)
+    browser = p.chromium.launch(headless=False)  # headless=True for invisible mode
+
+    # Create a new page
+    page = browser.new_page()
+
+    # Navigate to a website
+    page.goto("https://www.example.com")
+
+    # Get page title
+    title = page.title()
+    print(f"Page title: {title}")
+
+    # Take a screenshot
+    page.screenshot(path="screenshot.png")
+
+    # Click on elements
+    page.click("a.link")
+
+    # Fill a form
+    page.fill("input[name='username']", "testuser")
+    page.fill("input[name='password']", "secret")
+    page.click("button[type='submit']")
+
+    # Wait for navigation to complete
+    page.wait_for_load_state("networkidle")
+
+    # Extract text content
+    content = page.text_content("div#main")
+    print(content)
+
+    # Evaluate JavaScript in the page
+    dimensions = page.evaluate("""() => {
+        return {
+            width: document.documentElement.clientWidth,
+            height: document.documentElement.clientHeight
+        }
+    }""")
+    print(f"Page dimensions: {dimensions['width']}x{dimensions['height']}")
+
+    # Close browser
+    browser.close()
+
+# Handling authentication
+def run_with_auth():
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        context = browser.new_context()
+
+        # Go to login page
+        page = context.new_page()
+        page.goto("https://example.com/login")
+
+        # Login
+        page.fill("input[name='username']", "myuser")
+        page.fill("input[name='password']", "mypassword")
+        page.click("button[type='submit']")
+
+        # Wait for login to complete
+        page.wait_for_selector("text=Welcome")
+
+        # Save storage state (cookies, localStorage)
+        context.storage_state(path="auth.json")
+
+        browser.close()
+
+# Reusing authentication
+def run_with_saved_auth():
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        # Load the saved auth state
+        context = browser.new_context(storage_state="auth.json")
+
+        # Now you're already logged in
+        page = context.new_page()
+        page.goto("https://example.com/dashboard")
+
+        browser.close()
+
+# Intercepting network requests
+def intercept_requests():
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        page = browser.new_page()
+
+        # Block images and CSS to speed up browsing
+        page.route("**/*.{png,jpg,jpeg,css}", lambda route: route.abort())
+
+        # Modify a request
+        def handle_api_request(route):
+            # Get request details
+            request = route.request
+            # Continue with modified headers or data
+            route.continue_(headers={**request.headers, "X-Custom-Header": "value"})
+
+        page.route("**/api/data", handle_api_request)
+
+        page.goto("https://example.com")
+        browser.close()
+
+# Running a test with Playwright
+def test_search_functionality():
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        page = browser.new_page()
+
+        # Go to search page
+        page.goto("https://example.com")
+
+        # Perform search
+        page.fill("input[name='q']", "playwright python")
+        page.press("input[name='q']", "Enter")
+
+        # Wait for results and verify they loaded
+        page.wait_for_selector(".search-results")
+        results = page.query_selector_all(".search-result")
+
+        assert len(results) > 0, "No search results found"
+
+        # Extract first result title
+        first_result_title = results[0].query_selector(".title").inner_text()
+        print(f"First result: {first_result_title}")
+
+        browser.close()`,
+      },
     ],
   },
 ];
