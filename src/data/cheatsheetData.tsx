@@ -2648,4 +2648,366 @@ def test_search_functionality():
       },
     ],
   },
+  {
+    id: 'async-python',
+    title: 'Asynchronous Python',
+    examples: [
+      {
+        description: 'Async Basics',
+        code: `# Asynchronous programming allows concurrent code execution
+# It's ideal for I/O-bound operations like network requests, file operations
+# The asyncio module provides the foundation for async programming
+
+import asyncio
+
+# Basic async function definition with the 'async' keyword
+async def hello_world():
+    print("Hello")
+    # await pauses execution until the coroutine completes
+    await asyncio.sleep(1)  # Non-blocking sleep
+    print("World")
+
+# Running a single coroutine
+asyncio.run(hello_world())  # Python 3.7+ preferred way to run async code`,
+      },
+      {
+        description: 'Coroutines and Tasks',
+        code: `import asyncio
+
+# Coroutines are declared with 'async def' and can use 'await'
+async def fetch_data(url):
+    print(f"Fetching {url}")
+    await asyncio.sleep(2)  # Simulate network delay
+    return f"Data from {url}"
+
+# Tasks allow coroutines to run concurrently
+async def main():
+    # Create tasks to run concurrently
+    task1 = asyncio.create_task(fetch_data("example.com/api1"))
+    task2 = asyncio.create_task(fetch_data("example.com/api2"))
+
+    print("Tasks created, waiting for results...")
+
+    # Wait for both tasks to complete
+    result1 = await task1
+    result2 = await task2
+
+    print(f"Results: {result1}, {result2}")
+
+# Run the main coroutine
+asyncio.run(main())`,
+      },
+      {
+        description: 'Gather for Concurrency',
+        code: `import asyncio
+
+# Running multiple coroutines concurrently with gather
+async def main():
+    # Define coroutines
+    async def task1():
+        await asyncio.sleep(1)
+        return "Result 1"
+
+    async def task2():
+        await asyncio.sleep(2)
+        return "Result 2"
+
+    # Run both coroutines concurrently and wait for all to complete
+    results = await asyncio.gather(
+        task1(),
+        task2()
+    )
+
+    print(results)  # ['Result 1', 'Result 2']
+
+    # gather with exception handling
+    results = await asyncio.gather(
+        task1(),
+        task2(),
+        return_exceptions=True  # Return exceptions instead of raising them
+    )
+
+# Total execution time is ~2 seconds, not 3 seconds
+asyncio.run(main())`,
+      },
+      {
+        description: 'Wait and Timeouts',
+        code: `import asyncio
+
+async def main():
+    # Define coroutines with different durations
+    async def slow_operation():
+        await asyncio.sleep(2)
+        return "Slow operation completed"
+
+    async def fast_operation():
+        await asyncio.sleep(0.5)
+        return "Fast operation completed"
+
+    # Wait for the first coroutine to complete
+    done, pending = await asyncio.wait(
+        [slow_operation(), fast_operation()],
+        return_when=asyncio.FIRST_COMPLETED
+    )
+
+    # Process completed tasks
+    for task in done:
+        print(f"First result: {task.result()}")  # Will be fast_operation
+
+    # Cancel remaining tasks
+    for task in pending:
+        task.cancel()
+
+    # Wait with timeout
+    try:
+        result = await asyncio.wait_for(slow_operation(), timeout=1)
+        print(result)
+    except asyncio.TimeoutError:
+        print("Operation timed out")  # This will be printed
+
+asyncio.run(main())`,
+      },
+      {
+        description: 'Async for and Async with',
+        code: `import asyncio
+
+# Async iterators and async context managers
+class AsyncIterator:
+    def __init__(self, limit):
+        self.limit = limit
+        self.counter = 0
+
+    def __aiter__(self):
+        return self
+
+    async def __anext__(self):
+        if self.counter < self.limit:
+            self.counter += 1
+            await asyncio.sleep(0.1)
+            return self.counter
+        else:
+            raise StopAsyncIteration
+
+class AsyncContextManager:
+    async def __aenter__(self):
+        print("Entering context")
+        await asyncio.sleep(0.1)
+        return "Context value"
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        print("Exiting context")
+        await asyncio.sleep(0.1)
+
+async def main():
+    # Using async for with async iterator
+    async for number in AsyncIterator(3):
+        print(f"Got number: {number}")
+
+    # Using async with for async context manager
+    async with AsyncContextManager() as value:
+        print(f"Inside context with {value}")
+
+asyncio.run(main())`,
+      },
+      {
+        description: 'Error Handling in Async Code',
+        code: `import asyncio
+
+async def main():
+    # Basic try/except in async functions
+    async def might_fail():
+        await asyncio.sleep(0.1)
+        raise ValueError("Something went wrong")
+
+    try:
+        await might_fail()
+    except ValueError as e:
+        print(f"Caught error: {e}")
+
+    # Error handling with multiple tasks
+    async def task_a():
+        await asyncio.sleep(0.1)
+        return "Result A"
+
+    async def task_b():
+        await asyncio.sleep(0.1)
+        raise RuntimeError("Task B failed")
+
+    # Method 1: Using gather with return_exceptions
+    results = await asyncio.gather(
+        task_a(),
+        task_b(),
+        return_exceptions=True
+    )
+
+    for i, result in enumerate(results):
+        if isinstance(result, Exception):
+            print(f"Task {i} failed with: {result}")
+        else:
+            print(f"Task {i} succeeded with: {result}")
+
+    # Method 2: Using tasks and exception handling
+    tasks = [
+        asyncio.create_task(task_a()),
+        asyncio.create_task(task_b())
+    ]
+
+    for task in tasks:
+        try:
+            result = await task
+            print(f"Task succeeded with: {result}")
+        except Exception as e:
+            print(f"Task failed with: {e}")
+
+asyncio.run(main())`,
+      },
+      {
+        description: 'Async with External Libraries',
+        code: `# Many libraries provide async support
+# Examples: aiohttp, asyncpg, aiomysql, motor
+
+# Example with aiohttp for HTTP requests
+# pip install aiohttp
+import asyncio
+import aiohttp
+
+async def fetch_url(session, url):
+    async with session.get(url) as response:
+        return await response.text()
+
+async def main():
+    # Create a client session
+    async with aiohttp.ClientSession() as session:
+        # Fetch multiple URLs concurrently
+        urls = [
+            'https://example.com',
+            'https://python.org',
+            'https://github.com'
+        ]
+
+        tasks = [fetch_url(session, url) for url in urls]
+        results = await asyncio.gather(*tasks)
+
+        for url, html in zip(urls, results):
+            print(f"{url}: {len(html)} bytes")
+
+# Run the async function
+asyncio.run(main())`,
+      },
+      {
+        description: 'Async Generators and Comprehensions',
+        code: `import asyncio
+
+# Async generator function
+async def async_range(start, stop):
+    for i in range(start, stop):
+        await asyncio.sleep(0.1)
+        yield i
+
+# Async comprehensions (Python 3.6+)
+async def main():
+    # Using async generator
+    async for i in async_range(1, 4):
+        print(i)
+
+    # Async list comprehension (Python 3.6+)
+    results = [i async for i in async_range(5, 8)]
+    print(results)  # [5, 6, 7]
+
+    # Async generator expression
+    async def double(x):
+        await asyncio.sleep(0.1)
+        return x * 2
+
+    # Process items with async function
+    doubled = [await double(i) async for i in async_range(1, 4)]
+    print(doubled)  # [2, 4, 6]
+
+asyncio.run(main())`,
+      },
+      {
+        description: 'Synchronization Primitives',
+        code: `import asyncio
+import time
+
+# Asyncio provides synchronization primitives for coroutines
+async def main():
+    # Lock prevents multiple coroutines from accessing a resource simultaneously
+    lock = asyncio.Lock()
+
+    async def worker(name, lock):
+        print(f"{name} waiting for lock")
+        async with lock:  # Acquire and release lock
+            print(f"{name} acquired lock")
+            await asyncio.sleep(1)
+            print(f"{name} releasing lock")
+
+    # Run workers concurrently
+    await asyncio.gather(
+        worker("Worker 1", lock),
+        worker("Worker 2", lock),
+        worker("Worker 3", lock)
+    )
+
+    # Event signals when something happens
+    event = asyncio.Event()
+
+    async def waiter(name):
+        print(f"{name} waiting for event")
+        await event.wait()
+        print(f"{name} received event")
+
+    async def setter():
+        await asyncio.sleep(1)
+        print("Setting event")
+        event.set()  # Wake up all waiters
+
+    await asyncio.gather(
+        waiter("Waiter 1"),
+        waiter("Waiter 2"),
+        setter()
+    )
+
+asyncio.run(main())`,
+      },
+      {
+        description: 'Running Blocking Code',
+        code: `import asyncio
+import time
+import concurrent.futures
+
+async def main():
+    # CPU-bound or blocking I/O operations should be run in a thread or process pool
+
+    # Simulate CPU-bound function
+    def cpu_bound_task(x):
+        time.sleep(1)  # Simulating CPU work
+        return x * x
+
+    # Run in a thread pool (for I/O-bound blocking functions)
+    print("Running in thread pool...")
+    with concurrent.futures.ThreadPoolExecutor() as pool:
+        result = await asyncio.get_event_loop().run_in_executor(
+            pool, cpu_bound_task, 5
+        )
+        print(f"Thread pool result: {result}")
+
+    # Run in a process pool (for CPU-bound functions)
+    print("Running in process pool...")
+    with concurrent.futures.ProcessPoolExecutor() as pool:
+        result = await asyncio.get_event_loop().run_in_executor(
+            pool, cpu_bound_task, 6
+        )
+        print(f"Process pool result: {result}")
+
+    # Default executor (ThreadPoolExecutor)
+    result = await asyncio.get_event_loop().run_in_executor(
+        None, cpu_bound_task, 7
+    )
+    print(f"Default executor result: {result}")
+
+asyncio.run(main())`,
+      },
+    ],
+  },
 ];
