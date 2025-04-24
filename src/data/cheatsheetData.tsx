@@ -1026,4 +1026,310 @@ if __name__ == "__main__":
       },
     ],
   },
+  {
+    id: 'standard-library',
+    title: 'Python Standard Library',
+    examples: [
+      {
+        description: 'Working with Paths',
+        code: `# Python's pathlib module provides an object-oriented interface to file paths
+from pathlib import Path
+
+# Creating path objects
+path = Path("ecommerce/__init__.py")  # Relative path
+path = Path("/usr/local/bin")         # Absolute path (Unix/Mac)
+path = Path(r"C:\\Program Files\\")   # Absolute path (Windows)
+path = Path.home()                    # Home directory
+
+# Path operations and properties
+path.exists()                # Check if path exists
+path.is_file()               # Check if path is a file
+path.is_dir()                # Check if path is a directory
+print(path.name)             # File name with extension
+print(path.stem)             # File name without extension
+print(path.suffix)           # File extension
+print(path.parent)           # Parent directory
+
+# Creating new paths based on existing paths
+path = path.with_name("file.txt")    # Replace name and extension
+path = path.with_suffix(".txt")      # Replace extension only
+print(path.absolute())               # Get absolute path`,
+      },
+      {
+        description: 'Working with Directories',
+        code: `from pathlib import Path
+
+path = Path("ecommerce")
+
+# Directory operations
+path.exists()               # Check if directory exists
+path.mkdir()                # Create directory
+path.rmdir()                # Remove directory
+path.rename("ecommerce2")   # Rename directory
+
+# Listing directory contents
+for p in path.iterdir():    # List files and directories
+    print(p)
+
+# List comprehension with filtering
+dirs = [p for p in path.iterdir() if p.is_dir()]
+py_files = [p for p in path.glob("*.py")]         # Non-recursive search
+all_py_files = [p for p in path.rglob("*.py")]    # Recursive search`,
+      },
+      {
+        description: 'Working with Files',
+        code: `from pathlib import Path
+import shutil
+import time
+
+path = Path("file.txt")
+
+# File operations
+path.exists()               # Check if file exists
+path.rename("new_name.txt") # Rename file
+path.unlink()               # Delete file
+
+# File information
+stats = path.stat()         # Get file stats
+print(stats.st_size)        # File size in bytes
+print(stats.st_ctime)       # Creation time (timestamp)
+
+# Convert timestamp to human-readable format
+from time import ctime
+print(ctime(stats.st_ctime))
+
+# Reading and writing files
+content = path.read_text()             # Read text file
+path.write_text("Hello, World!")       # Write to text file
+binary_data = path.read_bytes()        # Read binary file
+path.write_bytes(b"Binary content")    # Write binary file
+
+# Copying files (use shutil module)
+source = Path("file.txt")
+target = Path("file_copy.txt")
+shutil.copy(source, target)            # Copy file`,
+      },
+      {
+        description: 'Working with Zip Files',
+        code: `from pathlib import Path
+from zipfile import ZipFile
+
+# Creating zip files
+with ZipFile("files.zip", "w") as zip:
+    # Get all files in the ecommerce directory recursively
+    for path in Path("ecommerce").rglob("*.*"):
+        zip.write(path)
+
+# Reading zip files
+with ZipFile("files.zip") as zip:
+    # List zip contents
+    print(zip.namelist())
+
+    # Get info about a specific file
+    info = zip.getinfo("ecommerce/__init__.py")
+    print(info.file_size)
+    print(info.compress_size)
+
+    # Extract files
+    zip.extractall("extract_dir")`,
+      },
+      {
+        description: 'Working with CSV Files',
+        code: `import csv
+from pathlib import Path
+
+# Writing CSV files
+with open("data.csv", "w") as file:
+    writer = csv.writer(file)
+    writer.writerow(["transaction_id", "product_id", "price"])
+    writer.writerow([1000, 1, 5])
+    writer.writerow([1001, 2, 15])
+
+# Reading CSV files
+with open("data.csv") as file:
+    reader = csv.reader(file)
+    # Convert to list (consumes the iterator)
+    data = list(reader)
+    print(data)
+
+    # OR iterate through the rows
+    # for row in reader:
+    #     print(row)
+
+# Note: CSV module requires file objects, not Path objects
+# All values are read as strings and need manual conversion`,
+      },
+      {
+        description: 'Working with JSON Files',
+        code: `import json
+from pathlib import Path
+
+# Creating JSON data
+movies = [
+    {"id": 1, "title": "Terminator", "year": 1989},
+    {"id": 2, "title": "Kindergarten Cop", "year": 1993}
+]
+
+# Converting Python objects to JSON string
+data = json.dumps(movies)
+
+# Writing JSON to a file
+Path("movies.json").write_text(data)
+
+# Reading JSON from a file
+data = Path("movies.json").read_text()
+movies = json.loads(data)
+
+# Accessing JSON data
+print(movies[0]["title"])  # Terminator`,
+      },
+      {
+        description: 'Working with Timestamps',
+        code: `import time
+
+# Get current timestamp (seconds since Unix epoch)
+timestamp = time.time()
+print(timestamp)  # e.g., 1621532240.3567
+
+# Convert timestamp to human-readable time
+time_string = time.ctime(timestamp)
+print(time_string)  # e.g., Thu May 20 12:30:40 2021
+
+# Measuring execution time
+start = time.time()
+
+# Code to measure
+for i in range(1000000):
+    pass
+
+end = time.time()
+duration = end - start
+print(f"Execution time: {duration} seconds")`,
+      },
+      {
+        description: 'Working with DateTimes',
+        code: `from datetime import datetime, timedelta
+
+# Current date and time
+now = datetime.now()
+print(now)  # e.g., 2021-05-20 12:34:56.789012
+
+# Creating specific datetime objects
+dt1 = datetime(2020, 1, 1)
+dt2 = datetime(2020, 1, 1, 14, 30)  # Year, month, day, hour, minute
+
+# Formatting datetime to string
+print(dt1.strftime("%Y-%m-%d %H:%M:%S"))  # 2020-01-01 00:00:00
+print(dt1.strftime("%Y/%m/%d"))           # 2020/01/01
+print(dt1.strftime("%B %d, %Y"))          # January 01, 2020
+
+# Parsing string to datetime
+date_str = "2020-01-01"
+date_obj = datetime.strptime(date_str, "%Y-%m-%d")
+
+# Date arithmetic with timedelta
+tomorrow = now + timedelta(days=1)
+next_hour = now + timedelta(hours=1)
+yesterday = now - timedelta(days=1)`,
+      },
+      {
+        description: 'Working with Time Deltas',
+        code: `from datetime import datetime, timedelta
+
+# Creating time deltas
+delta1 = timedelta(days=1)
+delta2 = timedelta(days=1, seconds=1000, microseconds=1000)
+
+# Date arithmetic
+dt1 = datetime(2020, 1, 1)
+dt2 = dt1 + delta1
+print(dt2)  # 2020-01-02 00:00:00
+
+# Calculating time differences
+dt1 = datetime(2020, 1, 1)
+dt2 = datetime(2020, 12, 31)
+delta = dt2 - dt1
+
+print(delta.days)           # 365
+print(delta.seconds)        # 0
+print(delta.total_seconds())  # 31536000.0`,
+      },
+      {
+        description: 'Generating Random Values',
+        code: `import random
+import string
+
+# Random float between 0 and 1
+print(random.random())
+
+# Random integer between a and b (inclusive)
+print(random.randint(1, 10))
+
+# Random element from a sequence
+print(random.choice([1, 2, 3, 4, 5]))
+
+# Random multiple elements (with replacement)
+print(random.choices([1, 2, 3, 4, 5], k=3))
+
+# Shuffle a list in-place
+numbers = [1, 2, 3, 4, 5]
+random.shuffle(numbers)
+print(numbers)
+
+# Generate a random password
+letters = string.ascii_letters + string.digits
+password = ''.join(random.choices(letters, k=8))
+print(password)`,
+      },
+      {
+        description: 'Opening Web Browsers',
+        code: `import webbrowser
+
+# Open a URL in the default browser
+webbrowser.open("https://google.com")
+
+# Open a URL in a new window
+webbrowser.open_new("https://python.org")
+
+# Open a URL in a new tab
+webbrowser.open_new_tab("https://docs.python.org")
+
+# Useful for automation scripts, e.g., after deployment:
+print("Deployment completed")
+webbrowser.open("https://myapp.com")  # Open the deployed site`,
+      },
+      {
+        description: 'Command-Line Arguments',
+        code: `import sys
+
+# sys.argv is a list containing command-line arguments
+# sys.argv[0] is the script name itself
+# Example: python app.py arg1 arg2 arg3
+
+# Print all arguments
+print(sys.argv)
+
+# Check if arguments were provided
+if len(sys.argv) == 1:
+    print("Usage: python app.py <password>")
+else:
+    password = sys.argv[1]
+    print(f"Password: {password}")
+
+# More sophisticated argument parsing
+import argparse
+
+parser = argparse.ArgumentParser(description="Description of your program")
+parser.add_argument("-f", "--file", help="Input file name", required=True)
+parser.add_argument("-o", "--output", help="Output file name")
+parser.add_argument("-v", "--verbose", action="store_true", help="Increase verbosity")
+
+args = parser.parse_args()
+
+if args.verbose:
+    print(f"Processing {args.file}...")
+# Use as: python app.py -f input.txt -o output.txt -v`,
+      },
+    ],
+  },
 ];
