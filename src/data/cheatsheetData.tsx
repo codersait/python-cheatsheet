@@ -2011,6 +2011,69 @@ except requests.exceptions.RequestException as req_err:
     print(f"Request error occurred: {req_err}")`,
       },
       {
+        description: 'Securely Storing API Keys',
+        code: `# Storing API keys directly in your code is a security risk
+# Here's how to store them securely
+
+# 1. Using a separate configuration file
+# config.py
+API_KEY = "your_secret_api_key"  # Store your API key here
+
+# main.py
+import config
+import requests
+
+headers = {
+    "Authorization": f"Bearer {config.API_KEY}"
+}
+response = requests.get("https://api.example.com/data", headers=headers)
+
+# Make sure to add config.py to your .gitignore file:
+# .gitignore
+# config.py
+
+# 2. Using environment variables
+# Set environment variables in your shell:
+# export API_KEY="your_secret_api_key"
+
+import os
+import requests
+
+api_key = os.environ.get("API_KEY")
+if not api_key:
+    raise ValueError("API_KEY environment variable not set")
+
+headers = {
+    "Authorization": f"Bearer {api_key}"
+}
+response = requests.get("https://api.example.com/data", headers=headers)
+
+# 3. Using a .env file with python-dotenv
+# Create a .env file:
+# API_KEY=your_secret_api_key
+# Add .env to your .gitignore
+
+# Install with: pip install python-dotenv
+from dotenv import load_dotenv
+import os
+import requests
+
+load_dotenv()  # Load variables from .env file
+api_key = os.environ.get("API_KEY")
+
+headers = {
+    "Authorization": f"Bearer {api_key}"
+}
+response = requests.get("https://api.example.com/data", headers=headers)
+
+# 4. Using a secrets manager for production
+# For production applications, consider:
+# - AWS Secrets Manager
+# - Google Cloud Secret Manager
+# - Azure Key Vault
+# - HashiCorp Vault`,
+      },
+      {
         description: 'Using the Yelp API',
         code: `# Yelp API allows you to search businesses, get reviews, and more
 # Install with: pip install requests
