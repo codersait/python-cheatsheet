@@ -559,6 +559,16 @@ finally:
         # Method implementation`,
       },
       {
+        description: 'The self Parameter',
+        code: `# Methods defined in a class should have at least one parameter
+# By convention, this first parameter is called 'self'
+# It references the current object we're working with
+
+class Example:
+    def method(self):  # 'self' refers to the instance
+        self.value = 10  # Accessing instance attributes`,
+      },
+      {
         description: 'Instance vs Class Attributes',
         code: `class Point:
     default_color = "red"  # Class attribute
