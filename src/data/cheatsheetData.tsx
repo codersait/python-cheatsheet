@@ -1552,6 +1552,58 @@ help(math.sin)                  # Show function documentation
 # sin(x, /)
 #     Return the sine of x (measured in radians).`,
       },
+      {
+        description: 'uv (Modern Python Package Manager)',
+        code: `# uv is a modern Python package manager and installer written in Rust
+# Much faster than pip and pipenv for dependency resolution and installation
+# Provides tools for managing Python versions, dependencies, and projects
+# Install with: curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Python version management
+uv python install                    # Install latest Python version
+uv python install 3.11               # Install specific Python version
+uv python list                       # View available Python versions
+uv python find                       # Find an installed Python version
+uv python pin                        # Pin project to specific Python version
+uv python uninstall 3.10             # Uninstall a Python version
+
+# Package installation
+uv pip install requests              # Install a package
+uv pip install requests==2.28.1      # Install specific version
+uv pip install -r requirements.txt   # Install from requirements file
+uv pip install -e .                  # Install current directory in editable mode
+uv pip uninstall requests            # Uninstall a package
+uv pip freeze                        # List installed packages
+
+# Virtual environments
+uv venv                              # Create virtual environment in .venv
+uv venv /path/to/venv                # Create at specific location
+uv pip install --venv requests       # Install into a virtual environment
+
+# Project management
+uv init                              # Create a new Python project
+uv add requests                      # Add dependency to project
+uv add pytest --dev                  # Add development dependency
+uv remove requests                   # Remove dependency from project
+uv sync                              # Sync dependencies with environment
+uv lock                              # Create lockfile for dependencies
+uv tree                              # View dependency tree
+uv build                             # Build project into distribution archives
+uv publish                           # Publish project to package index
+
+# Script management
+uv run python script.py              # Run a script with project's Python
+uv run pytest                        # Run pytest in project environment
+uv add --script script.py requests   # Add dependency to a script
+uv remove --script script.py requests # Remove dependency from script
+
+# Enhanced workflow and performance:
+# - Parallel operations (downloads and installations)
+# - Fast dependency resolution algorithm
+# - Seamless Python version management
+# - Native binary wheels with no compilation needed
+# - Reproducible environments with lockfiles`,
+      },
     ],
   },
 ];
