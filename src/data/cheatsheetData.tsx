@@ -1586,4 +1586,575 @@ uv publish               # Publish the project to a package index`,
       },
     ],
   },
+  {
+    id: 'popular-packages',
+    title: 'Popular Python Packages',
+    examples: [
+      {
+        description: 'Web Scraping with BeautifulSoup',
+        code: `# BeautifulSoup is a library for parsing HTML and XML documents
+# Used for web scraping - extracting data from websites
+# Install with: pip install beautifulsoup4 requests
+
+import requests
+from bs4 import BeautifulSoup
+
+# Download webpage content
+response = requests.get("https://stackoverflow.com/questions")
+html_content = response.text
+
+# Create a BeautifulSoup object to parse the HTML
+soup = BeautifulSoup(html_content, "html.parser")
+
+# Finding elements by tag
+all_h3_tags = soup.find_all("h3")
+
+# Finding elements by class
+questions = soup.find_all("div", class_="s-post-summary")
+
+# Finding elements by ID
+specific_element = soup.find(id="question-summary-12345")
+
+# Extracting text content
+for question in questions:
+    title = question.find("h3").text
+    excerpt = question.find("div", class_="s-post-summary--content-excerpt").text
+    print(f"Title: {title.strip()}")
+    print(f"Excerpt: {excerpt.strip()}")
+    print("---")
+
+# Navigating the DOM
+# Moving down to children
+children = soup.div.children
+
+# Moving up to parent
+parent = soup.h3.parent
+
+# Moving sideways to siblings
+next_sibling = soup.h3.next_sibling
+previous_sibling = soup.h3.previous_sibling`,
+      },
+      {
+        description: 'Browser Automation with Selenium',
+        code: `# Selenium automates browsers for testing or web scraping
+# Install with: pip install selenium
+# Also requires a browser driver (chromedriver, geckodriver, etc.)
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+# Initialize browser
+browser = webdriver.Chrome()  # Or Firefox(), Edge(), Safari()
+
+# Navigate to a website
+browser.get("https://www.github.com")
+
+# Finding elements
+login_link = browser.find_element(By.LINK_TEXT, "Sign in")
+login_link.click()
+
+# Working with forms
+username_input = browser.find_element(By.ID, "login_field")
+password_input = browser.find_element(By.ID, "password")
+
+username_input.send_keys("your_username")
+password_input.send_keys("your_password")
+password_input.send_keys(Keys.RETURN)  # Press Enter
+
+# Waiting for elements to load
+wait = WebDriverWait(browser, 10)
+element = wait.until(
+    EC.presence_of_element_located((By.CLASS_NAME, "avatar"))
+)
+
+# Taking screenshots
+browser.save_screenshot("screenshot.png")
+
+# Executing JavaScript
+browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
+# Closing the browser
+browser.quit()`,
+      },
+      {
+        description: 'Working with PDFs using PyPDF2',
+        code: `# PyPDF2 allows you to work with PDF files
+# Install with: pip install PyPDF2
+
+import PyPDF2
+
+# Reading a PDF file
+with open("example.pdf", "rb") as file:
+    reader = PyPDF2.PdfFileReader(file)
+
+    # Getting basic information
+    num_pages = reader.numPages
+    print(f"Number of pages: {num_pages}")
+
+    # Extracting text from a page
+    page = reader.getPage(0)  # First page (0-indexed)
+    text = page.extractText()
+    print(text)
+
+    # Get document information
+    info = reader.getDocumentInfo()
+    print(f"Author: {info.author}")
+    print(f"Creator: {info.creator}")
+
+# Manipulating PDFs
+with open("example.pdf", "rb") as file:
+    reader = PyPDF2.PdfFileReader(file)
+    writer = PyPDF2.PdfFileWriter()
+
+    # Rotate a page
+    page = reader.getPage(0)
+    page.rotateClockwise(90)
+    writer.addPage(page)
+
+    # Add another page
+    page = reader.getPage(1)
+    writer.addPage(page)
+
+    # Write to new file
+    with open("output.pdf", "wb") as output_file:
+        writer.write(output_file)
+
+# Merging PDFs
+merger = PyPDF2.PdfFileMerger()
+merger.append("file1.pdf")
+merger.append("file2.pdf")
+merger.write("merged.pdf")`,
+      },
+      {
+        description: 'Working with Excel using openpyxl',
+        code: `# openpyxl is a library for reading and writing Excel files
+# Install with: pip install openpyxl
+
+import openpyxl
+from openpyxl.styles import Font, PatternFill, Alignment
+from openpyxl.chart import BarChart, Reference
+
+# Loading an existing workbook
+workbook = openpyxl.load_workbook("example.xlsx")
+
+# Accessing worksheets
+sheet = workbook["Sheet1"]  # By name
+active_sheet = workbook.active  # Active sheet
+
+# Creating a new workbook
+new_workbook = openpyxl.Workbook()
+new_sheet = new_workbook.active
+new_sheet.title = "Data"
+
+# Working with cells
+cell = sheet["A1"]  # Access by coordinates
+cell = sheet.cell(row=1, column=1)  # Access by row, col
+
+# Reading cell values
+value = cell.value
+print(f"Cell A1 contains: {value}")
+
+# Iterating through rows
+for row in sheet.rows:
+    for cell in row:
+        print(cell.value, end=" ")
+    print()
+
+# Iterating through a range
+for row in sheet.iter_rows(min_row=1, max_row=5, min_col=1, max_col=3):
+    for cell in row:
+        print(cell.value, end=" ")
+    print()
+
+# Writing data
+sheet["A1"] = "Transaction ID"
+sheet.cell(row=2, column=1).value = 1001
+
+# Applying styles
+bold_font = Font(bold=True)
+sheet["A1"].font = bold_font
+sheet["A1"].fill = PatternFill(start_color="FFFF00", end_color="FFFF00", fill_type="solid")
+sheet["A1"].alignment = Alignment(horizontal="center")
+
+# Creating charts
+chart = BarChart()
+data = Reference(sheet, min_row=2, max_row=5, min_col=3, max_col=3)
+categories = Reference(sheet, min_row=2, max_row=5, min_col=1, max_col=1)
+chart.add_data(data)
+chart.set_categories(categories)
+sheet.add_chart(chart, "E1")
+
+# Saving workbook
+workbook.save("output.xlsx")`,
+      },
+      {
+        description: 'Scientific Computing with NumPy',
+        code: `# NumPy is a fundamental package for scientific computing in Python
+# Install with: pip install numpy
+
+import numpy as np
+
+# Creating arrays
+array1d = np.array([1, 2, 3, 4, 5])                      # 1D array
+array2d = np.array([[1, 2, 3], [4, 5, 6]])               # 2D array (matrix)
+zeros = np.zeros((3, 4))                                  # Array of zeros (3 rows, 4 cols)
+ones = np.ones((2, 3))                                    # Array of ones
+identity = np.eye(3)                                      # 3x3 identity matrix
+range_array = np.arange(0, 10, 2)                         # Array [0, 2, 4, 6, 8]
+linspace = np.linspace(0, 1, 5)                           # 5 evenly spaced points between 0 and 1
+random_array = np.random.random((2, 2))                   # Random values between 0 and 1
+
+# Array attributes
+print(array2d.shape)                                      # Shape (dimensions)
+print(array2d.dtype)                                      # Data type
+print(array2d.size)                                       # Total number of elements
+print(array2d.ndim)                                       # Number of dimensions
+
+# Reshaping arrays
+reshaped = array1d.reshape((5, 1))                        # Reshape to 5x1 array
+flattened = array2d.flatten()                             # Flatten to 1D array
+
+# Array operations
+array_sum = array1d + 10                                  # Add 10 to each element
+array_product = array1d * 2                               # Multiply each element by 2
+matrix_product = np.dot(array2d, np.ones((3, 2)))         # Matrix multiplication
+transposed = array2d.T                                    # Transpose
+
+# Array indexing and slicing
+first_element = array1d[0]                                # First element
+subset = array1d[1:4]                                     # Elements from index 1 to 3
+row = array2d[0, :]                                       # First row
+column = array2d[:, 1]                                    # Second column
+submatrix = array2d[0:2, 1:3]                             # Submatrix
+
+# Boolean indexing
+greater_than_two = array1d[array1d > 2]                   # Elements greater than 2
+
+# Mathematical functions
+print(np.mean(array1d))                                   # Mean
+print(np.median(array1d))                                 # Median
+print(np.std(array1d))                                    # Standard deviation
+print(np.max(array2d, axis=0))                            # Maximum along each column
+print(np.sum(array2d, axis=1))                            # Sum along each row
+
+# Broadcasting (operating on arrays of different shapes)
+broadcast_result = array2d + np.array([10, 20, 30])       # Add vector to each row`,
+      },
+      {
+        description: 'Data Analysis with pandas',
+        code: `# pandas is a powerful data analysis and manipulation library
+# Install with: pip install pandas
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Creating DataFrames
+# From a dictionary
+data = {
+    'Name': ['John', 'Anna', 'Peter', 'Linda'],
+    'Age': [28, 34, 29, 42],
+    'City': ['New York', 'Paris', 'Berlin', 'London']
+}
+df = pd.DataFrame(data)
+
+# From a CSV file
+df_csv = pd.read_csv('data.csv')
+
+# From an Excel file
+df_excel = pd.read_excel('data.xlsx', sheet_name='Sheet1')
+
+# Basic information
+print(df.shape)                    # Dimensions of DataFrame
+print(df.info())                   # Summary info
+print(df.describe())               # Statistical summary
+print(df.dtypes)                   # Data types of columns
+print(df.head(2))                  # First 2 rows
+print(df.tail(2))                  # Last 2 rows
+
+# Accessing data
+print(df['Name'])                  # Access a column
+print(df[['Name', 'Age']])         # Access multiple columns
+print(df.iloc[0])                  # Access a row by position
+print(df.iloc[0:2, 1:3])           # Slice rows and columns by position
+print(df.loc[0, 'Name'])           # Access by row and column labels
+print(df.at[0, 'Name'])            # Fast scalar access
+
+# Filtering data
+young_people = df[df['Age'] < 30]
+ny_residents = df[df['City'] == 'New York']
+complex_filter = df[(df['Age'] > 30) & (df['City'] != 'Berlin')]
+
+# Sorting
+sorted_by_age = df.sort_values('Age')
+sorted_by_multiple = df.sort_values(['City', 'Age'], ascending=[True, False])
+
+# Adding and removing columns
+df['Country'] = ['USA', 'France', 'Germany', 'UK']    # Add column
+df['Age in Months'] = df['Age'] * 12                  # Derived column
+df.drop('Country', axis=1, inplace=True)              # Remove column
+
+# Handling missing values
+df_with_nan = df.copy()
+df_with_nan.loc[1, 'Age'] = np.nan
+filled_df = df_with_nan.fillna(0)            # Replace NaN with 0
+dropped_rows = df_with_nan.dropna()          # Drop rows with any NaN values
+
+# Grouping and aggregation
+grouped = df.groupby('City')
+city_mean_age = grouped['Age'].mean()
+city_stats = grouped.agg({
+    'Age': ['min', 'max', 'mean'],
+    'Name': 'count'
+})
+
+# Merging and joining
+left = pd.DataFrame({'key': ['A', 'B', 'C'], 'value': [1, 2, 3]})
+right = pd.DataFrame({'key': ['A', 'B', 'D'], 'value': [4, 5, 6]})
+merged = pd.merge(left, right, on='key', how='inner')    # Inner join on 'key'
+concatenated = pd.concat([left, right], ignore_index=True)  # Stack vertically
+
+# Creating pivot tables
+pivot = df.pivot_table(
+    values='Age',
+    index='City',
+    aggfunc='mean'
+)
+
+# Time series
+dates = pd.date_range('20230101', periods=6)
+ts_df = pd.DataFrame(np.random.randn(6, 4), index=dates, columns=list('ABCD'))
+monthly = ts_df.resample('M').mean()                    # Monthly resampling
+
+# Plotting with matplotlib
+df.plot(kind='bar', x='Name', y='Age')
+plt.title('Age by Name')
+plt.xlabel('Name')
+plt.ylabel('Age')
+plt.savefig('age_chart.png')`,
+      },
+      {
+        description: 'Working with APIs using Requests',
+        code: `# APIs (Application Programming Interfaces) provide ways for programs to interact
+# Install with: pip install requests
+
+import requests
+import json
+
+# Making a simple GET request
+response = requests.get("https://api.github.com/users/microsoft")
+print(f"Status code: {response.status_code}")  # 200 means success
+
+# Working with JSON responses
+data = response.json()  # Convert JSON response to Python dictionary
+print(f"Company name: {data['name']}")
+print(f"Location: {data['location']}")
+
+# Passing query parameters
+params = {
+    "q": "python",
+    "sort": "stars",
+    "order": "desc"
+}
+response = requests.get("https://api.github.com/search/repositories", params=params)
+repos = response.json()
+for repo in repos["items"][:3]:  # Print top 3 results
+    print(f"Repository: {repo['name']}, Stars: {repo['stargazers_count']}")
+
+# Making a POST request with data
+new_todo = {
+    "title": "Learn Python APIs",
+    "completed": False
+}
+response = requests.post(
+    "https://jsonplaceholder.typicode.com/todos",
+    json=new_todo
+)
+created_todo = response.json()
+print(f"Created todo ID: {created_todo['id']}")
+
+# Authentication methods
+# Basic authentication
+response = requests.get(
+    "https://api.github.com/user",
+    auth=("username", "password")  # Replace with real credentials
+)
+
+# API key in headers
+headers = {
+    "Authorization": "Bearer YOUR_API_KEY"  # Replace with real API key
+}
+response = requests.get("https://api.example.com/data", headers=headers)
+
+# API key as query parameter
+params = {
+    "api_key": "YOUR_API_KEY",  # Replace with real API key
+    "q": "search_term"
+}
+response = requests.get("https://api.example.com/search", params=params)
+
+# Handling errors
+try:
+    response = requests.get("https://api.example.com/data")
+    response.raise_for_status()  # Raises an exception for 4XX/5XX responses
+    data = response.json()
+except requests.exceptions.HTTPError as http_err:
+    print(f"HTTP error occurred: {http_err}")
+except requests.exceptions.ConnectionError as conn_err:
+    print(f"Connection error occurred: {conn_err}")
+except requests.exceptions.Timeout as timeout_err:
+    print(f"Timeout error occurred: {timeout_err}")
+except requests.exceptions.RequestException as req_err:
+    print(f"Request error occurred: {req_err}")`,
+      },
+      {
+        description: 'Using the Yelp API',
+        code: `# Yelp API allows you to search businesses, get reviews, and more
+# Install with: pip install requests
+
+import requests
+import json
+
+# Set your API key (get from https://www.yelp.com/developers)
+API_KEY = "YOUR_API_KEY"  # Replace with your actual API key
+
+# Define headers with authorization
+headers = {
+    "Authorization": f"Bearer {API_KEY}"
+}
+
+# Searching for businesses
+search_params = {
+    "term": "coffee",
+    "location": "San Francisco",
+    "limit": 5,
+    "sort_by": "rating"  # Options: best_match, rating, review_count, distance
+}
+
+# Make the API request
+response = requests.get(
+    "https://api.yelp.com/v3/businesses/search",
+    headers=headers,
+    params=search_params
+)
+
+# Parse and display results
+if response.status_code == 200:
+    data = response.json()
+    businesses = data["businesses"]
+
+    print(f"Found {len(businesses)} businesses:")
+    for business in businesses:
+        print(f"Name: {business['name']}")
+        print(f"Rating: {business['rating']} stars")
+        print(f"Address: {', '.join(business['location']['display_address'])}")
+        print(f"Phone: {business['phone']}")
+        print("---")
+else:
+    print(f"Error: {response.status_code}")
+    print(response.text)
+
+# Getting details for a specific business
+business_id = "WavvLdfdP6g8aZTtbBQHTw"  # Example: Gary Danko in San Francisco
+detail_url = f"https://api.yelp.com/v3/businesses/{business_id}"
+
+response = requests.get(detail_url, headers=headers)
+if response.status_code == 200:
+    business = response.json()
+    print(f"Name: {business['name']}")
+    print(f"Categories: {[category['title'] for category in business['categories']]}")
+    print(f"Price: {business.get('price', 'N/A')}")
+    print(f"Rating: {business['rating']} stars ({business['review_count']} reviews)")
+
+# Getting reviews for a business
+reviews_url = f"https://api.yelp.com/v3/businesses/{business_id}/reviews"
+response = requests.get(reviews_url, headers=headers)
+
+if response.status_code == 200:
+    reviews = response.json()["reviews"]
+    print("\nTop Reviews:")
+    for review in reviews:
+        print(f"Rating: {review['rating']} stars")
+        print(f"Text: {review['text'][:100]}...")
+        print(f"User: {review['user']['name']}")
+        print("---")`,
+      },
+      {
+        description: 'Sending Text Messages with Twilio',
+        code: `# Twilio allows you to send SMS, make calls, and more from Python
+# Install with: pip install twilio
+
+from twilio.rest import Client
+
+# Your Twilio account credentials
+# Get these from your Twilio dashboard: https://www.twilio.com/console
+account_sid = "YOUR_ACCOUNT_SID"  # Replace with your SID
+auth_token = "YOUR_AUTH_TOKEN"    # Replace with your token
+
+# Initialize the Twilio client
+client = Client(account_sid, auth_token)
+
+# Sending an SMS
+message = client.messages.create(
+    body="Hello from Python! This is a test message.",
+    from_="+12345678901",  # Your Twilio phone number
+    to="+10987654321"      # Recipient's phone number
+)
+print(f"Message SID: {message.sid}")
+print(f"Status: {message.status}")
+
+# Sending an MMS (message with media)
+message = client.messages.create(
+    body="Check out this image!",
+    from_="+12345678901",  # Your Twilio phone number
+    to="+10987654321",     # Recipient's phone number
+    media_url=["https://demo.twilio.com/owl.png"]  # URL to image
+)
+
+# Making a voice call
+call = client.calls.create(
+    url="http://demo.twilio.com/docs/voice.xml",  # TwiML instructions for call
+    from_="+12345678901",  # Your Twilio phone number
+    to="+10987654321"      # Recipient's phone number
+)
+print(f"Call SID: {call.sid}")
+
+# Retrieving message history
+messages = client.messages.list(limit=5)  # Get last 5 messages
+for record in messages:
+    print(f"Message SID: {record.sid}")
+    print(f"From: {record.from_}")
+    print(f"To: {record.to}")
+    print(f"Body: {record.body}")
+    print(f"Status: {record.status}")
+    print(f"Date sent: {record.date_sent}")
+    print("---")
+
+# Error handling
+try:
+    # Attempt to send a message
+    message = client.messages.create(
+        body="Hello from Python!",
+        from_="+12345678901",
+        to="+10987654321"
+    )
+except Exception as e:
+    print(f"An error occurred: {str(e)}")
+
+# Validating phone numbers
+from twilio.rest.lookups.v1 import PhoneNumbers
+
+# Verify a phone number is valid
+try:
+    phone_number = client.lookups.v1.phone_numbers("+10987654321").fetch()
+    print(f"Valid number: {phone_number.phone_number}")
+    print(f"Country: {phone_number.country_code}")
+except Exception as e:
+    print(f"Invalid number: {str(e)}")`,
+      },
+    ],
+  },
 ];
