@@ -545,99 +545,350 @@ finally:
         code: `# Class: blueprint for creating new objects
 # Object: instance of a class
 
-# Class: Human
-# Objects: John, Mary, Jack,`,
+# Every object in Python is created using a class
+class_type = type(1)  # class 'int'
+class_type = type(True)  # class 'bool'
+class_type = type([1, 2])  # class 'list'`,
       },
       {
         description: 'Creating Classes',
+        code: `# Pascal naming convention for classes (first letter of each word capitalized)
+class Point:
+    # All methods in classes should have 'self' as first parameter
+    def draw(self):
+        print("draw")
+
+# Creating an instance
+point = Point()
+point.draw()  # Calling the method
+
+# Checking object type
+isinstance(point, Point)  # True`,
+      },
+      {
+        description: 'Constructors',
+        code: `class Point:
+    def __init__(self, x, y):  # Constructor
+        self.x = x  # Creating instance attributes
+        self.y = y
+
+    def draw(self):
+        print(f"Point ({self.x}, {self.y})")
+
+# Creating an instance with initial values
+point = Point(10, 20)
+point.draw()  # Output: Point (10, 20)`,
+      },
+      {
+        description: 'Instance vs Class Attributes',
+        code: `class Point:
+    default_color = "red"  # Class attribute (shared by all instances)
+
+    def __init__(self, x, y):
+        self.x = x  # Instance attributes (unique to each instance)
+        self.y = y
+
+# Accessing class attribute through the class
+print(Point.default_color)  # Output: red
+
+# Accessing class attribute through an instance
+point = Point(1, 2)
+print(point.default_color)  # Output: red
+
+# Modifying class attribute affects all instances
+Point.default_color = "blue"
+print(point.default_color)  # Output: blue`,
+      },
+      {
+        description: 'Instance vs Class Methods',
         code: `class Point:
     def __init__(self, x, y):
         self.x = x
         self.y = y
 
-    def draw(self):
-        # Method implementation`,
-      },
-      {
-        description: 'The self Parameter',
-        code: `# Methods defined in a class should have at least one parameter
-# By convention, this first parameter is called 'self'
-# It references the current object we're working with
-
-class Example:
-    def method(self):  # 'self' refers to the instance
-        self.value = 10  # Accessing instance attributes`,
-      },
-      {
-        description: 'Instance vs Class Attributes',
-        code: `class Point:
-    default_color = "red"  # Class attribute
-
-    def __init__(self, x, y):
-        self.x = x  # Instance attribute`,
-      },
-      {
-        description: 'Instance vs Class Methods',
-        code: `class Point:
     def draw(self):  # Instance method
-        # Uses self
+        print(f"Point ({self.x}, {self.y})")
 
     @classmethod
-    def zero(cls):   # Class method
-        return cls(0, 0)`,
+    def zero(cls):  # Class method
+        return cls(0, 0)  # Returns a new Point at origin
+
+# Using the class method to create a point at origin
+origin = Point.zero()
+origin.draw()  # Output: Point (0, 0)`,
       },
       {
         description: 'Magic Methods',
-        code: `__str__()  # String representation
-__eq__()   # Equality comparison
-__cmp__()  # Comparison`,
+        code: `class Point:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def __str__(self):  # Called when converting object to string
+        return f"({self.x}, {self.y})"
+
+    def __eq__(self, other):  # Called when using == operator
+        return self.x == other.x and self.y == other.y
+
+    def __gt__(self, other):  # Called when using > operator
+        return self.x > other.x and self.y > other.y
+
+    def __add__(self, other):  # Called when using + operator
+        return Point(self.x + other.x, self.y + other.y)
+
+p1 = Point(1, 2)
+p2 = Point(1, 2)
+p3 = Point(3, 4)
+
+print(p1)  # Output: (1, 2)
+print(p1 == p2)  # Output: True
+print(p3 > p1)  # Output: True
+combined = p1 + p2  # Creates a new Point(2, 4)`,
+      },
+      {
+        description: 'Making Custom Containers',
+        code: `class TagCloud:
+    def __init__(self):
+        self.__tags = {}  # Private dictionary (using double underscore)
+
+    def add(self, tag):
+        self.__tags[tag.lower()] = self.__tags.get(tag.lower(), 0) + 1
+
+    def __getitem__(self, tag):  # Called when using [] syntax for access
+        return self.__tags.get(tag.lower(), 0)
+
+    def __setitem__(self, tag, count):  # Called when using [] syntax for assignment
+        self.__tags[tag.lower()] = count
+
+    def __len__(self):  # Called when using len() function
+        return len(self.__tags)
+
+    def __iter__(self):  # Called when iterating over the object
+        return iter(self.__tags)
+
+# Usage
+cloud = TagCloud()
+cloud.add("Python")
+cloud.add("python")
+cloud.add("PYTHON")
+print(cloud["PYTHON"])  # Output: 3
+cloud["java"] = 10
+print(len(cloud))  # Output: 2`,
       },
       {
         description: 'Private Members',
         code: `class Point:
     def __init__(self, x):
-        self.__x = x  # Private attribute`,
+        self.__x = x  # Private attribute (name mangling)
+
+    def get_x(self):
+        return self.__x
+
+    def set_x(self, value):
+        self.__x = value
+
+point = Point(1)
+# print(point.__x)  # This will raise an AttributeError
+print(point.get_x())  # Access through method: 1
+
+# Private attributes can still be accessed (not truly private)
+print(point._Point__x)  # Direct access using name mangling: 1`,
       },
       {
         description: 'Properties',
         code: `class Point:
     def __init__(self, x):
-        self.__x = x
+        self.__x = x  # Private attribute
 
-    @property
+    @property  # Getter
     def x(self):
         return self.__x
 
-    @x.setter
+    @x.setter  # Setter
     def x(self, value):
-        self.__x = value`,
+        if value < 0:
+            raise ValueError("Value cannot be negative")
+        self.__x = value
+
+point = Point(1)
+print(point.x)  # Access like an attribute, not a method
+point.x = 10  # Uses the setter
+# point.x = -1  # Raises ValueError`,
       },
       {
         description: 'Inheritance',
-        code: `class FileStream(Stream):
-    def open(self):
-        super().open()  # Call parent method`,
+        code: `class Animal:
+    def __init__(self):
+        self.age = 1
+
+    def eat(self):
+        print("eat")
+
+class Mammal(Animal):  # Inherits from Animal
+    def walk(self):
+        print("walk")
+
+class Bird(Animal):  # Inherits from Animal
+    def fly(self):
+        print("fly")
+
+m = Mammal()
+m.eat()  # Inherited method
+m.walk()  # Method defined in Mammal
+print(m.age)  # Inherited attribute: 1
+
+# Checking inheritance
+isinstance(m, Mammal)  # True
+isinstance(m, Animal)  # True
+isinstance(m, object)  # True - all classes inherit from object
+
+# Checking subclass relationship
+issubclass(Mammal, Animal)  # True
+issubclass(Mammal, object)  # True`,
+      },
+      {
+        description: 'Method Overriding',
+        code: `class Animal:
+    def __init__(self):
+        self.age = 1
+
+    def eat(self):
+        print("Animal eat")
+
+class Mammal(Animal):
+    def __init__(self):
+        super().__init__()  # Call parent constructor
+        self.weight = 2
+
+    def eat(self):
+        super().eat()  # Call parent method
+        print("Mammal eat")
+
+m = Mammal()
+m.eat()
+# Output:
+# Animal eat
+# Mammal eat
+
+print(m.age)     # 1 (from Animal)
+print(m.weight)  # 2 (from Mammal)`,
       },
       {
         description: 'Multiple Inheritance',
-        code: `class FlyingFish(Flyer, Swimmer):
-    # Inherits from multiple classes`,
+        code: `class Flyer:
+    def fly(self):
+        print("fly")
+
+class Swimmer:
+    def swim(self):
+        print("swim")
+
+class FlyingFish(Flyer, Swimmer):  # Inherits from multiple classes
+    pass
+
+f = FlyingFish()
+f.fly()   # Method from Flyer
+f.swim()  # Method from Swimmer
+
+# Be careful with multiple inheritance when classes have methods with the same name
+# Python will use the method from the first class listed in the inheritance`,
       },
       {
         description: 'Abstract Base Classes',
         code: `from abc import ABC, abstractmethod
 
-class Stream(ABC):
+class Stream(ABC):  # Abstract base class
     @abstractmethod
+    def read(self):  # Abstract method must be implemented by subclasses
+        pass
+
+    @abstractmethod
+    def write(self):
+        pass
+
+class FileStream(Stream):
     def read(self):
-        pass`,
+        print("Reading from a file")
+
+    def write(self):
+        print("Writing to a file")
+
+# stream = Stream()  # This would raise TypeError - can't instantiate abstract class
+fs = FileStream()  # This works because all abstract methods are implemented`,
+      },
+      {
+        description: 'Duck Typing',
+        code: `# Python uses duck typing: "If it walks like a duck and quacks like a duck, it is a duck"
+# Objects don't need to inherit from a common base class to be used polymorphically
+
+class TextBox:
+    def draw(self):
+        print("TextBox")
+
+class DropDownList:
+    def draw(self):
+        print("DropDownList")
+
+def draw(controls):
+    for control in controls:
+        control.draw()
+
+# These don't inherit from a common base class, but both have draw() method
+draw([TextBox(), DropDownList()])`,
+      },
+      {
+        description: 'Extending Built-in Types',
+        code: `class Text(str):  # Inherit from built-in string type
+    def duplicate(self):
+        return self + self
+
+class TrackableList(list):  # Inherit from built-in list type
+    def append(self, object):
+        print("Append called")
+        super().append(object)  # Call the parent's append method
+
+text = Text("Python")
+print(text.lower())    # Built-in method: python
+print(text.duplicate())  # Custom method: PythonPython
+
+tracked = TrackableList()
+tracked.append(1)  # Output: Append called`,
+      },
+      {
+        description: 'Data Classes (Python 3.7+)',
+        code: `from dataclasses import dataclass
+
+@dataclass
+class Point:
+    x: int
+    y: int
+    z: int = 0  # Default value
+
+    def calculate_distance(self):
+        return (self.x ** 2 + self.y ** 2 + self.z ** 2) ** 0.5
+
+# Automatically implements __init__, __repr__, __eq__, etc.
+p = Point(1, 2)
+print(p)  # Output: Point(x=1, y=2, z=0)
+
+# Equality comparison works without custom __eq__
+print(Point(1, 2) == Point(1, 2))  # Output: True`,
       },
       {
         description: 'Named Tuples',
         code: `from collections import namedtuple
 
+# Lightweight, immutable class alternative
 Point = namedtuple("Point", ["x", "y"])
-point = Point(x=1, y=2)`,
+# or Point = namedtuple("Point", "x y")
+
+p1 = Point(1, 2)
+p2 = Point(x=1, y=2)  # Can use keyword arguments
+print(p1.x, p1.y)  # Access by name: 1 2
+print(p1[0], p1[1])  # Access by index: 1 2
+
+# Unpacking works too
+x, y = p1`,
       },
     ],
   },
