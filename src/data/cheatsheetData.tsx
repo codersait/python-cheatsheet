@@ -1184,6 +1184,216 @@ movies = json.loads(data)
 print(movies[0]["title"])  # Terminator`,
       },
       {
+        description: 'Working with SQLite Databases',
+        code: `import sqlite3
+from pathlib import Path
+import json
+
+# Connect to a database (creates it if it doesn't exist)
+with sqlite3.connect("app.db") as connection:
+    # Create a table
+    connection.execute("""
+        CREATE TABLE IF NOT EXISTS movies (
+            id INTEGER PRIMARY KEY,
+            title TEXT NOT NULL,
+            year INTEGER NOT NULL
+        )
+    """)
+
+    # Insert data
+    command = "INSERT INTO movies VALUES(?, ?, ?)"
+    for movie in movies:
+        connection.execute(command, tuple(movie.values()))
+
+    # Save changes
+    connection.commit()
+
+    # Query data
+    cursor = connection.execute("SELECT * FROM movies")
+
+    # Method 1: Iterate through cursor
+    for row in cursor:
+        print(row)  # Returns a tuple (id, title, year)
+
+    # Method 2: Get all rows at once
+    movies = cursor.fetchall()
+
+    # Using placeholders for safe queries (prevents SQL injection)
+    year = 1990
+    cursor = connection.execute(
+        "SELECT * FROM movies WHERE year > ?",
+        (year,)
+    )`,
+      },
+      {
+        description: 'String Templates',
+        code: `from string import Template
+
+# Creating a template with placeholders
+template = Template("Hi $name, this is our test email.")
+
+# Method 1: Substitute with dictionary
+body = template.substitute({"name": "John"})
+print(body)  # "Hi John, this is our test email."
+
+# Method 2: Substitute with keyword arguments
+body = template.substitute(name="Jane")
+print(body)  # "Hi Jane, this is our test email."
+
+# Safe substitution (won't raise KeyError for missing placeholders)
+template = Template("$name has $amount dollars in their $account")
+body = template.safe_substitute(
+    name="Bob",
+    amount=100
+    # No 'account' provided, but won't raise error
+)
+print(body)  # "Bob has 100 dollars in their $account"
+
+# Using templates with HTML
+html_template = Template("""
+<!DOCTYPE html>
+<html>
+<body>
+    <h1>Welcome $name!</h1>
+    <p>Thank you for signing up with $company.</p>
+</body>
+</html>
+""")
+
+html_content = html_template.substitute(
+    name="Alice",
+    company="Awesome Corp"
+)`,
+      },
+      {
+        description: 'Sending Emails',
+        code: `from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.image import MIMEImage
+import smtplib
+from pathlib import Path
+
+# Create the email message
+message = MIMEMultipart()
+message["from"] = "My Name"
+message["to"] = "recipient@example.com"
+message["subject"] = "This is a test email"
+
+# Add text content
+body = "This is the body of our email message"
+message.attach(MIMEText(body, "plain"))
+
+# Alternative: Add HTML content
+html_content = """
+<html>
+<body>
+    <h1 style="color: blue;">Hello there!</h1>
+    <p>This is an <b>HTML</b> email.</p>
+</body>
+</html>
+"""
+message.attach(MIMEText(html_content, "html"))
+
+# Add an image attachment
+image_path = Path("image.png")
+with open(image_path, "rb") as image_file:
+    image_data = image_file.read()
+    image = MIMEImage(image_data)
+    image.add_header("Content-Disposition", f"attachment; filename={image_path.name}")
+    message.attach(image)
+
+# Send the email using Gmail's SMTP server
+with smtplib.SMTP("smtp.gmail.com", 587) as smtp:
+    smtp.ehlo()
+    smtp.starttls()  # Enable TLS encryption
+    smtp.login("your_email@gmail.com", "your_password")
+    smtp.send_message(message)
+
+    # Alternative send method with raw strings
+    # smtp.sendmail(
+    #     from_addr="your_email@gmail.com",
+    #     to_addrs="recipient@example.com",
+    #     msg=message.as_string()
+    # )
+
+# Note: For Gmail, you may need to:
+# 1. Enable less secure apps: https://myaccount.google.com/lesssecureapps
+# 2. Or use an App Password if 2FA is enabled`,
+      },
+      {
+        description: 'Running External Programs',
+        code: `import subprocess
+
+# Run an external program and capture output
+completed = subprocess.run(
+    ["ls", "-l"],  # Command and arguments as list
+    capture_output=True,  # Capture stdout and stderr
+    text=True,  # Return strings instead of bytes
+    check=True,  # Raise exception if command fails
+)
+
+# Access information about the completed process
+print(f"Return code: {completed.returncode}")
+print(f"Standard output: {completed.stdout}")
+print(f"Standard error: {completed.stderr}")
+
+# Run a command with input
+result = subprocess.run(
+    ["grep", "pattern"],
+    input="This contains a pattern to find",
+    text=True,
+    capture_output=True
+)
+
+# Alternative: Pipe output from one command to another
+ps = subprocess.Popen(
+    ["ps", "aux"],
+    stdout=subprocess.PIPE,
+    text=True
+)
+grep = subprocess.Popen(
+    ["grep", "python"],
+    stdin=ps.stdout,
+    stdout=subprocess.PIPE,
+    text=True
+)
+ps.stdout.close()  # Allow ps to receive SIGPIPE
+output, errors = grep.communicate()
+
+# Run a shell command (use with caution for security)
+subprocess.run(
+    "cat file.txt | grep pattern > output.txt",
+    shell=True
+)  # Warning: Shell injection risk with user input`,
+      },
+      {
+        description: 'Generating Random Values',
+        code: `import random
+import string
+
+# Random float between 0 and 1
+print(random.random())
+
+# Random integer between a and b (inclusive)
+print(random.randint(1, 10))
+
+# Random element from a sequence
+print(random.choice([1, 2, 3, 4, 5]))
+
+# Random multiple elements (with replacement)
+print(random.choices([1, 2, 3, 4, 5], k=3))
+
+# Shuffle a list in-place
+numbers = [1, 2, 3, 4, 5]
+random.shuffle(numbers)
+print(numbers)
+
+# Generate a random password
+letters = string.ascii_letters + string.digits
+password = ''.join(random.choices(letters, k=8))
+print(password)`,
+      },
+      {
         description: 'Working with Timestamps',
         code: `import time
 
