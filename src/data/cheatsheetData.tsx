@@ -892,4 +892,138 @@ x, y = p1`,
       },
     ],
   },
+  {
+    id: 'modules',
+    title: 'Modules',
+    examples: [
+      {
+        description: 'Creating Modules',
+        code: `# A module is a file containing Python code
+# Used to organize code into manageable parts
+
+# sales.py (a module file)
+def calculate_tax():
+    pass
+
+def calculate_shipping():
+    pass
+
+# In app.py (importing the module)
+from sales import calculate_tax, calculate_shipping
+
+# Alternative import style
+import sales
+sales.calculate_tax()
+
+# Don't use: from sales import *  # Bad practice`,
+      },
+      {
+        description: 'Compiled Python Files',
+        code: `# Python compiles imported modules to .pyc files
+# These are stored in the __pycache__ folder
+# Purpose: Speed up module loading, not execution speed
+# Python automatically checks file timestamps to determine
+# when to recompile modules
+
+# Example of compiled filename:
+# __pycache__/sales.cpython-37.pyc`,
+      },
+      {
+        description: 'Module Search Path',
+        code: `import sys
+
+# Python searches for modules in these locations in order:
+print(sys.path)  # List of directories Python searches
+
+# 1. Current directory first
+# 2. PYTHONPATH environment variable directories
+# 3. Standard library directories
+# 4. Site-packages directories (third-party modules)
+
+# This is why proper organization with packages is important`,
+      },
+      {
+        description: 'Packages',
+        code: `# A package is a container for multiple modules
+# In file system terms: a package is a directory with an __init__.py file
+
+# Directory structure:
+# ecommerce/
+#   __init__.py  # Makes the directory a package
+#   sales.py
+
+# Importing from packages
+from ecommerce.sales import calculate_tax
+import ecommerce.sales
+
+# The __init__.py file can be empty or contain initialization code
+# that runs when the package is imported`,
+      },
+      {
+        description: 'Sub-packages',
+        code: `# Packages can contain sub-packages to create deeper organization
+
+# Directory structure:
+# ecommerce/
+#   __init__.py
+#   shopping/
+#     __init__.py
+#     sales.py
+
+# Importing from sub-packages
+from ecommerce.shopping.sales import calculate_tax
+
+# Each directory needs an __init__.py file to be considered a package`,
+      },
+      {
+        description: 'Intra-package References',
+        code: `# Sometimes you need to import modules from sibling packages
+# There are two approaches: absolute and relative imports
+
+# Absolute imports (preferred)
+from ecommerce.customer import contact
+
+# Relative imports
+from ..customer import contact  # Two dots = up one level
+from . import sales  # Same package (current directory)
+
+# PEP 8 recommends absolute imports as they're more readable
+# Use relative imports only if the absolute paths get too verbose`,
+      },
+      {
+        description: 'The dir Function',
+        code: `# The dir() function returns a list of attributes and methods of an object
+# Useful for exploring and debugging modules
+
+import sales
+print(dir(sales))  # Shows all attributes/methods in sales module
+
+# Every module has automatically created attributes
+print(sales.__name__)     # Full module name (e.g., 'ecommerce.shopping.sales')
+print(sales.__package__)  # Package name (e.g., 'ecommerce.shopping')
+print(sales.__file__)     # File path on disk`,
+      },
+      {
+        description: 'Executing Modules as Scripts',
+        code: `# Modules can be both imported and run directly as scripts
+# The __name__ variable helps distinguish between the two cases
+
+# sales.py
+def calculate_tax():
+    pass
+
+def calculate_shipping():
+    pass
+
+# This code runs only when the module is executed directly
+# It doesn't run when the module is imported elsewhere
+if __name__ == "__main__":
+    print("Sales module started")
+    calculate_tax()
+
+# When run directly: __name__ equals "__main__"
+# When imported: __name__ equals the module's name`,
+      },
+    ],
+  },
 ];
