@@ -1332,4 +1332,226 @@ if args.verbose:
       },
     ],
   },
+  {
+    id: 'package-index',
+    title: 'Python Package Index',
+    examples: [
+      {
+        description: 'PyPI (Python Package Index)',
+        code: `# PyPI is a repository of Python packages built by the community
+# Located at https://pypi.org
+# Similar to npm for JavaScript or Maven for Java
+# Contains over 350,000 projects/packages
+
+# Popular packages for common tasks:
+# - requests: HTTP client
+# - Django/Flask: Web frameworks
+# - NumPy/Pandas: Data analysis
+# - Matplotlib/Seaborn: Data visualization
+# - TensorFlow/PyTorch: Machine learning`,
+      },
+      {
+        description: 'pip (Package Installer for Python)',
+        code: `# Installing packages
+pip install requests                 # Install latest version
+pip install requests==2.28.1         # Install specific version
+pip install requests>=2.28.1         # Install minimum version
+pip install requests~=2.28.1         # Install compatible version (2.28.x)
+
+# Managing packages
+pip uninstall requests               # Uninstall a package
+pip list                             # List installed packages
+pip show requests                    # Show package details
+pip freeze > requirements.txt        # Export dependencies list
+pip install -r requirements.txt      # Install from requirements file
+pip install --upgrade requests       # Upgrade a package
+pip install --upgrade pip            # Upgrade pip itself`,
+      },
+      {
+        description: 'Virtual Environments',
+        code: `# Virtual environments isolate project dependencies
+# Allow different projects to use different versions of packages
+# Prevent conflicts between package versions
+
+# Creating virtual environments
+# Python 3.3+ has built-in venv module
+python -m venv env                   # Create virtual environment named "env"
+
+# Activating the environment
+# On Windows:
+env\\Scripts\\activate
+
+# On macOS/Linux:
+source env/bin/activate              # Terminal shows (env) when active
+
+# Deactivating the environment
+deactivate
+
+# The virtual env has its own pip and Python interpreter
+# Packages installed while activated are isolated to this environment`,
+      },
+      {
+        description: 'pipenv (Modern Python Workflow)',
+        code: `# pipenv combines pip and virtual environments into one tool
+# Install it with: pip install pipenv
+
+# Basic usage
+pipenv install requests              # Create venv and install package
+pipenv install pytest --dev          # Install development dependency
+pipenv uninstall requests            # Uninstall package
+pipenv shell                         # Activate virtual environment
+exit                                 # Exit the virtual environment
+
+# Project management
+pipenv --venv                        # Show virtual env location
+pipenv graph                         # Show dependency graph
+pipenv lock                          # Generate Pipfile.lock
+pipenv install --ignore-pipfile      # Install from Pipfile.lock
+pipenv update --outdated             # Show outdated dependencies
+pipenv update                        # Update all packages
+pipenv update requests               # Update specific package`,
+      },
+      {
+        description: 'Pipfile and Pipfile.lock',
+        code: `# Pipfile - Human-readable dependency definitions
+# Example Pipfile:
+[packages]
+requests = ">=2.20.0"
+numpy = "*"              # Latest version
+
+[dev-packages]
+pytest = "*"
+black = "*"
+
+[requires]
+python_version = "3.9"   # Python version requirement
+
+# Pipfile.lock - Generated file with exact versions
+# Used to recreate identical environments
+# Contains hashes to verify package integrity
+# Should be committed to version control
+# Never edit manually!`,
+      },
+      {
+        description: 'Publishing Packages to PyPI',
+        code: `# File structure for a simple package
+my_package/
+  ├── setup.py                # Package metadata
+  ├── README.md               # Package documentation
+  ├── LICENSE                 # License information
+  └── my_package/             # Actual module code
+      ├── __init__.py         # Makes directory a package
+      └── module.py           # Code implementation
+
+# Example setup.py file
+from setuptools import setup, find_packages
+
+setup(
+    name="my_package",
+    version="0.1.0",
+    author="Your Name",
+    author_email="your.email@example.com",
+    description="A brief description of the package",
+    long_description=open("README.md").read(),
+    long_description_content_type="text/markdown",
+    url="https://github.com/yourusername/my_package",
+    packages=find_packages(),
+    classifiers=[
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+    ],
+    python_requires=">=3.6",
+    install_requires=["requests", "numpy"],
+)
+
+# Building and publishing
+pip install build twine               # Install build tools
+python -m build                       # Build package (creates dist/)
+twine check dist/*                    # Check package validity
+twine upload --repository-url https://test.pypi.org/legacy/ dist/*  # Upload to TestPyPI
+twine upload dist/*                   # Upload to PyPI (needs account)`,
+      },
+      {
+        description: 'Docstrings',
+        code: `# Docstrings are used to document Python modules, classes, and functions
+# They appear as the first statement in a module, class, or function
+# Used by help(), pydoc, and IDE autocompletion
+
+# Module level docstring
+"""
+This module provides utilities for working with dates.
+
+It contains functions for parsing, formatting, and manipulating dates
+in various formats.
+"""
+
+# Function docstring
+def parse_date(date_string, format="%Y-%m-%d"):
+    """
+    Parse a string into a datetime object.
+
+    Parameters:
+        date_string (str): The date string to parse
+        format (str): The format string (default: ISO format)
+
+    Returns:
+        datetime: A datetime object representing the date
+
+    Raises:
+        ValueError: If the date_string cannot be parsed with the given format
+    """
+    # Function implementation here
+
+# Class docstring
+class DateConverter:
+    """
+    A utility class for converting between date formats.
+
+    This class provides methods to convert dates between different
+    string representations and datetime objects.
+
+    Attributes:
+        default_format (str): The default date format to use
+    """
+
+    def __init__(self, default_format="%Y-%m-%d"):
+        """
+        Initialize the DateConverter with a default format.
+
+        Parameters:
+            default_format (str): The default format string to use
+        """
+        self.default_format = default_format`,
+      },
+      {
+        description: 'pydoc (Python Documentation Generator)',
+        code: `# pydoc is a built-in tool to access Python documentation
+
+# Viewing documentation in terminal
+pydoc math                      # Documentation for a module
+pydoc math.sin                  # Documentation for a function
+pydoc -k keyword                # Search for keyword in all modules
+
+# Generating HTML documentation
+pydoc -w math                   # Generates math.html
+pydoc -w .                      # Document current directory
+
+# Starting a documentation server
+pydoc -p 8080                   # Start web server on port 8080
+# Then access http://localhost:8080/
+
+# From within Python code
+help(math)                      # Show module documentation
+help(math.sin)                  # Show function documentation
+
+# Example of help() output:
+# >>> help(math.sin)
+# Help on built-in function sin in module math:
+#
+# sin(x, /)
+#     Return the sine of x (measured in radians).`,
+      },
+    ],
+  },
 ];
